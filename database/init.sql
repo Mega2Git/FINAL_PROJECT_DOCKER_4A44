@@ -4,7 +4,7 @@ USE mydatabase;
 CREATE TABLE IF NOT EXISTS `games`(
     `idgames` INT AUTO_INCREMENT PRIMARY KEY,
     `name` VARCHAR(255) NOT NULL,
-    `cost` VARCHAR(255) NOT NULL,
+    `cost` FLOAT NOT NULL,
     `category` VARCHAR(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
