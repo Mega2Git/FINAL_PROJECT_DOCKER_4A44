@@ -1,10 +1,4 @@
-# syntax=docker/dockerfile:1
+FROM mysql:9.1.0
 
-# Use the base image mysql:latest
-FROM mysql:latest
-
-# Set environment variables
-ENV MYSQL_DATABASE=mydb
-
-# Copy custom scripts or configuration files from your host to the container
-COPY ./scripts/ /docker-entrypoint-initdb.d/
+COPY ./init.sql /docker-entrypoint-initdb.d/init.sql
+EXPOSE 3306

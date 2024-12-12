@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS `games`(
 
 INSERT INTO games (
   `name`, `cost`, `category`
-) VALUES (
-  'Game 1', '10', 'RPG'
-);
+) VALUES
+  ('Game 1', '10', 'Action game'),
+  ('Game 2', '15', 'Horror game'),
+  ('Game 3', '20', 'Simulation video game');
