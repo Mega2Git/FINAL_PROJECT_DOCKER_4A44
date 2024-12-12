@@ -1,6 +1,6 @@
 version: "3"
 services:
-<<<<<<< HEAD
+
   database:
     image: mysql:9.1.0
     environment:
@@ -62,38 +62,3 @@ networks:
 volumes:
   mysql-data:
   my-nodejs-app:
-=======
->>>>>>> 769f0cb9057e0d45c13214e23dbac7bb36d052e8
-
-  database:
-    build:
-      context: ./database
-      dockerfile: dockerfile.mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: mydb
-      MYSQL_USER: test
-      MYSQL_PASSWORD: test
-    expose:
-      - "3306"  # Port mapping format corrected
-    volumes:
-      - my-db-volume:/var/lib/mysql
-    networks:
-      - mynetwork
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
-    environment:
-      PMA_HOST: database  # Corrected to match the service name
-      PMA_PORT: 3306
-      MYSQL_ROOT_PASSWORD: my-secret-pw
-    ports:
-      - 8080:80
-    depends_on:
-      - database  # Corrected to match the service name
-
-volumes:
-  my-db-volume:
-
-networks:
-  mynetwork:
