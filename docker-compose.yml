@@ -1,5 +1,4 @@
 version: "3"
-
 services: 
   database:
     container_name: MySQL
@@ -36,7 +35,7 @@ services:
     container_name: Backend
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.python
     environment:
       DB_HOST: ${DB_HOST}
       DB_USER: ${DB_USER}
