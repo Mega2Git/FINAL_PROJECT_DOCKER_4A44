@@ -1,5 +1,69 @@
 version: "3"
 services:
+<<<<<<< HEAD
+  database:
+    image: mysql:9.1.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    expose:
+      - "3306"
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./mysql-data:/var/lib/mysql
+    networks:
+      - mynetwork
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.2.1
+    ports:
+      - "8080:80"
+    networks:
+      - mynetwork
+    environment:
+      PMA_HOST: ${PMA_HOST}
+      PMA_USER: ${PMA_USER}
+      PMA_PASSWORD: ${PMA_PASSWORD}
+    
+  server:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.node
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+    expose:
+      - "3000"
+    volumes:
+      - ./my-nodejs-app:/app      
+    networks:
+      - mynetwork
+
+  nginx:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.nginx
+    environment:
+      REACT_APP_BACKEND_URL: ${REACT_APP_BACKEND_URL}
+    ports:
+      - "80:80"
+    networks:
+      - mynetwork
+    depends_on:
+      - server
+
+networks:
+  mynetwork:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  my-nodejs-app:
+=======
+>>>>>>> 769f0cb9057e0d45c13214e23dbac7bb36d052e8
 
   database:
     build:

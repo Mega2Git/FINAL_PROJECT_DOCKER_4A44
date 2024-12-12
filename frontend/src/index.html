@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Market Interface</title>
+		<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+		<script src="jquery.form.js"></script>
+		<script src="script.js"></script>
+		<link rel='stylesheet' href='style.css'>
+	</head>
+	<body>
+		<header>
+			<h1>Welcome to the Market</h1>
+		</header>
+		<div class="content">
+			<div id="form-container">
+				<h2>Add New Item</h2>
+				<form id="add-form" onsubmit="event.preventDefault(); addGame({name: document.getElementById('name').value, cost: parseFloat(document.getElementById('cost').value), category: document.getElementById('category').value}).then(updateGames).then(() => this.reset());">
+					<label for="name">Name:</label><br>
+					<input type="text" id="name" name="name" required><br><br>
+					<label for="cost">Cost:</label><br>
+					<input type="number" id="cost" name="cost" required><br><br>
+					<label for="category">Category:</label><br>
+					<input type="text" id="category" name="category" required><br><br>
+					<button type="submit">Add Item</button>
+				</form>
+			</div>
+			<div id="edit-modal" class="modal">
+				<div class="modal-content">
+					<div class="modal-header">Edit Item</div>
+					<form id="edit-form" onsubmit="event.preventDefault(); editGame({id: document.getElementById('edit-id').value, name: document.getElementById('edit-name').value, cost: parseFloat(document.getElementById('edit-cost').value), category: document.getElementById('edit-category').value}).then(updateGames).then(hideEditForm);">
+						<input type="hidden" id="edit-id">
+						<label for="edit-name">Name:</label><br>
+						<input type="text" id="edit-name" name="name" required><br><br>
+						<label for="edit-cost">Cost:</label><br>
+						<input type="number" id="edit-cost" name="cost" required><br><br>
+						<label for="edit-category">Category:</label><br>
+						<input type="text" id="edit-category" name="category" required><br><br>
+						<div class="modal-footer">
+							<button type="submit">Save Changes</button>
+							<button type="button" onclick="hideEditForm()">Cancel</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div id="items"></div>
+		</div>
+		<footer>
+			&copy; 2024 Market Place. All rights reserved.
+		</footer>
+	</body>
+</html>
