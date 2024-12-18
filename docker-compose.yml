@@ -1,68 +1,69 @@
-version: "3"
-services: 
-  database:
-    container_name: MySQL
-    build:
-      context: ./database
-      dockerfile: Dockerfile.mysql
-    platform: linux/amd64
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    expose:
-      - "3306"
-    volumes:
-      - ./mysql-data:/var/lib/mysql
-    networks:
-      - mynetwork
+version: "3"    # Version du format de fichier Docker Compose
 
-  phpmyadmin:
-    container_name: phpMyAdmin
-    image: phpmyadmin/phpmyadmin:5.2.1
-    platform: linux/amd64
-    ports:
-      - "8080:80"
-    networks:
-      - mynetwork
-    environment:
-      PMA_HOST: ${PMA_HOST}
-      PMA_USER: ${PMA_USER}
-      PMA_PASSWORD: ${PMA_PASSWORD}
-    
-  server:
-    container_name: Backend
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.python
-    environment:
-      DB_HOST: ${DB_HOST}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
-    expose:
-      - "3000"  
-    networks:
-      - mynetwork
+services:    # Définition des services (containers) qui seront créés
+    database:    # Service pour la base de données
+        container_name: MySQL    # Nom du conteneur de la base de données
+        build:
+            context: ./database    # Répertoire contenant les fichiers nécessaires pour construire l'image
+            dockerfile: Dockerfile.mysql    # Spécifie le fichier Dockerfile pour la construction de l'image MySQL
+        platform: linux/amd64    # Spécifie l'architecture de la plateforme
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}    # Mot de passe root de la base de données
+            MYSQL_DATABASE: ${MYSQL_DATABASE}    # Nom de la base de données à créer
+            MYSQL_USER: ${MYSQL_USER}    # Utilisateur pour se connecter à la base de données
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}    # Mot de passe pour l'utilisateur MySQL
+        expose:
+            - "3306"    # Expose le port 3306 pour la communication interne entre conteneurs (non accessible de l'extérieur)
+        volumes:
+            - ./mysql-data:/var/lib/mysql    # Volume pour persister les données de la base de données
+        networks:
+            - mynetwork    # Déclare que ce service fait partie du réseau 'mynetwork'
 
-  nginx:
-    container_name: Frontend
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.nginx
-    environment:
-      REACT_APP_BACKEND_URL: ${REACT_APP_BACKEND_URL}
-    ports:
-      - "80:80"
-    networks:
-      - mynetwork
-    depends_on:
-      - server
+    phpmyadmin:    # Service pour phpMyAdmin
+        container_name: phpMyAdmin    # Nom du conteneur phpMyAdmin
+        image: phpmyadmin/phpmyadmin:5.2.1    # Utilisation de l'image officielle de phpMyAdmin
+        platform: linux/amd64    # Spécifie l'architecture de la plateforme
+        ports:
+            - "8080:80"    # Mappage des ports, 8080 de l'hôte vers 80 du conteneur
+        networks:
+            - mynetwork    # Déclare que ce service fait partie du réseau 'mynetwork'
+        environment:
+            PMA_HOST: ${PMA_HOST}    # Hôte de la base de données à utiliser dans phpMyAdmin
+            PMA_USER: ${PMA_USER}    # Utilisateur pour se connecter à la base de données
+            PMA_PASSWORD: ${PMA_PASSWORD}    # Mot de passe pour l'utilisateur de la base de données
 
-networks:
-  mynetwork:
-    driver: bridge
+    server:    # Service pour le serveur backend
+        container_name: Backend    # Nom du conteneur du serveur backend
+        build:
+            context: ./backend    # Répertoire contenant les fichiers nécessaires pour construire l'image du backend
+            dockerfile: Dockerfile.python    # Spécifie le fichier Dockerfile pour la construction de l'image du backend
+        environment:
+            DB_HOST: ${DB_HOST}    # Hôte de la base de données pour le backend
+            DB_USER: ${DB_USER}    # Utilisateur de la base de données pour le backend
+            DB_PASSWORD: ${DB_PASSWORD}    # Mot de passe de l'utilisateur de la base de données pour le backend
+            DB_NAME: ${DB_NAME}    # Nom de la base de données pour le backend
+        expose:
+            - "3000"    # Expose le port 3000 pour la communication interne entre conteneurs (non accessible de l'extérieur)
+        networks:
+            - mynetwork    # Déclare que ce service fait partie du réseau 'mynetwork'
 
-volumes:
-  mysql-data:
+    nginx:    # Service pour le serveur Nginx pour le frontend
+        container_name: Frontend    # Nom du conteneur Nginx pour le frontend
+        build:
+            context: ./frontend    # Répertoire contenant les fichiers nécessaires pour construire l'image du frontend
+            dockerfile: Dockerfile.nginx    # Spécifie le fichier Dockerfile pour la construction de l'image Nginx
+        environment:
+            REACT_APP_BACKEND_URL: ${REACT_APP_BACKEND_URL}    # URL du backend à utiliser dans l'application React
+        ports:
+            - "80:80"    # Mappage des ports, 80 de l'hôte vers 80 du conteneur pour accéder à l'application frontend
+        networks:
+            - mynetwork    # Déclare que ce service fait partie du réseau 'mynetwork'
+        depends_on:
+            - server    # Le service frontend dépend du service backend pour être lancé après
+
+networks:    # Définition des réseaux Docker
+    mynetwork:    # Nom du réseau
+        driver: bridge    # Utilisation du driver 'bridge' pour ce réseau, permettant la communication entre conteneurs
+
+volumes:    # Définition des volumes
+    mysql-data:    # Volume pour stocker les données persistantes de la base de données

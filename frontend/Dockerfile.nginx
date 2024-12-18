@@ -1,5 +1,15 @@
+# Utilisation de l'image officielle de Nginx basée sur Alpine Linux (une version légère de Linux)
 FROM nginx:alpine
+
+# Copie des fichiers du dossier local 'src/' vers le répertoire où Nginx cherche les fichiers HTML par défaut
 COPY src/ /usr/share/nginx/html/
+
+# Copie du fichier de configuration personnalisé 'nginx.conf' dans le répertoire de configuration de Nginx
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose le port 80 du conteneur, ce qui permet d'accéder à Nginx depuis l'extérieur du conteneur
 EXPOSE 80
+
+# Commande de démarrage de Nginx avec l'option '-g daemon off;' pour garder le processus en avant-plan
+# Cela permet au conteneur Docker de rester en cours d'exécution.
 CMD ["nginx", "-g", "daemon off;"]

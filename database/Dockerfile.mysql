@@ -1,3 +1,10 @@
+# Utilisation de l'image officielle MySQL version 9.1.0
 FROM mysql:9.1.0
+
+# Copie du fichier SQL d'initialisation (init.sql) dans le répertoire d'initialisation de MySQL
+# Ce fichier sera exécuté lors du démarrage de la base de données pour initialiser la base de données.
 COPY ./init.sql /docker-entrypoint-initdb.d/init.sql
+
+# Expose le port 3306, le port par défaut pour MySQL
+# Cela permet de connecter des clients externes au conteneur sur ce port.
 EXPOSE 3306

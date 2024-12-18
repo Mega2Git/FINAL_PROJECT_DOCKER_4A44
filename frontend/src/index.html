@@ -1,49 +1,110 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<!-- Déclaration du titre de la page -->
 		<title>Market Interface</title>
+		<!-- Inclusion de jQuery -->
 		<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+		<!-- Inclusion de la bibliothèque jQuery Form pour gérer les formulaires -->
 		<script src="jquery.form.js"></script>
+		<!-- Inclusion du fichier JavaScript principal -->
 		<script src="script.js"></script>
+		<!-- Inclusion de la feuille de style -->
 		<link rel='stylesheet' href='style.css'>
 	</head>
 	<body>
+		<!-- En-tête de la page -->
 		<header>
 			<h1>Welcome to the Market</h1>
 		</header>
+		<!-- Conteneur principal pour le contenu de la page -->
 		<div class="content">
-			<div id="form-container">
-				<h2>Add New Item</h2>
-				<form id="add-form" onsubmit="event.preventDefault(); addGame({name: document.getElementById('name').value, cost: parseFloat(document.getElementById('cost').value), category: document.getElementById('category').value}).then(updateGames).then(() => this.reset());">
-					<label for="name">Name:</label><br>
-					<input type="text" id="name" name="name" required><br><br>
-					<label for="cost">Cost:</label><br>
-					<input type="number" id="cost" name="cost" min="0" step="0.01" required><br><br>
-					<label for="category">Category:</label><br>
-					<input type="text" id="category" name="category" required><br><br>
-					<button type="submit">Add Item</button>
+			<!-- Section de filtrage -->
+			<div id="filter-container">
+				<h2>Filter</h2>
+				<!-- Formulaire de filtre -->
+				<form id="filter-form" 
+					onsubmit="event.preventDefault(); applyFilters(
+					document.getElementById('filter-name').value, 
+					parseInt(document.getElementById('price-min').value), 
+					parseInt(document.getElementById('price-max').value), 
+					document.getElementById('filter-category').value); 
+					updateGames();">
+					<!-- Filtre par nom -->
+					<label for="filter-name">Name:</label>
+					<input type="text" id="filter-name" name="name">
+					<!-- Filtre par prix minimum -->
+					<label for="filter-price">Min Price :</label>
+					<input type="number" id="price-min" name="price-min" min="0" max="1000" step="1" value="0">
+					<!-- Filtre par prix maximum -->
+					<label for="filter-price">Max Price:</label>
+					<input type="number" id="price-max" name="price-max" min="0" max="1000" step="1" value="1000">
+					<!-- Filtre par catégorie -->
+					<label for="filter-category">Category:</label>
+					<input type="text" id="filter-category" name="category">
+					<!-- Bouton pour appliquer les filtres -->
+					<button type="submit">Apply Filters</button>
 				</form>
 			</div>
-			<div id="edit-modal" class="modal">
-				<div class="modal-content">
-					<div class="modal-header">Edit Item</div>
-					<form id="edit-form" onsubmit="event.preventDefault(); editGame({id: document.getElementById('edit-id').value, name: document.getElementById('edit-name').value, cost: parseFloat(document.getElementById('edit-cost').value), category: document.getElementById('edit-category').value}).then(updateGames).then(hideEditForm);">
-						<input type="hidden" id="edit-id">
-						<label for="edit-name">Name:</label><br>
-						<input type="text" id="edit-name" name="name" required><br><br>
-						<label for="edit-cost">Cost:</label><br>
-						<input type="number" id="edit-cost" name="cost"  min="0" step="0.01" required><br><br>
-						<label for="edit-category">Category:</label><br>
-						<input type="text" id="edit-category" name="category" required><br><br>
-						<div class="modal-footer">
-							<button type="submit">Save Changes</button>
-							<button type="button" onclick="hideEditForm()">Cancel</button>
-						</div>
+			<!-- Section principale contenant le formulaire d'ajout et la liste des items -->
+			<div id="main-content">
+				<!-- Formulaire pour ajouter un nouvel item -->
+				<div id="form-container">
+					<h2>Add New Item</h2>
+					<form id="add-form" 
+						onsubmit="event.preventDefault(); addGame({
+						name: document.getElementById('name').value, 
+						cost: parseFloat(document.getElementById('cost').value), 
+						category: document.getElementById('category').value
+						}).then(updateGames).then(() => this.reset());">
+						<!-- Champ pour le nom de l'item -->
+						<label for="name">Name:</label>
+						<input type="text" id="name" name="name" required>
+						<!-- Champ pour le prix de l'item -->
+						<label for="cost">Cost:</label>
+						<input type="number" id="cost" name="cost" min="0" step="0.01" required>
+						<!-- Champ pour la catégorie de l'item -->
+						<label for="category">Category:</label>
+						<input type="text" id="category" name="category" required>
+						<!-- Bouton pour ajouter l'item -->
+						<button type="submit">Add Item</button>
 					</form>
 				</div>
+				<!-- Fenêtre modale pour modifier un item existant -->
+				<div id="edit-modal" class="modal">
+					<div class="modal-content">
+						<div class="modal-header">Edit Item</div>
+						<form id="edit-form" 
+							onsubmit="event.preventDefault(); editGame({
+							id: document.getElementById('edit-id').value, 
+							name: document.getElementById('edit-name').value, 
+							cost: parseFloat(document.getElementById('edit-cost').value), 
+							category: document.getElementById('edit-category').value
+							}).then(updateGames).then(hideEditForm);">
+							<!-- Champ caché pour l'ID de l'item -->
+							<input type="hidden" id="edit-id">
+							<!-- Champ pour modifier le nom -->
+							<label for="edit-name">Name:</label>
+							<input type="text" id="edit-name" name="name" required>
+							<!-- Champ pour modifier le prix -->
+							<label for="edit-cost">Cost:</label>
+							<input type="number" id="edit-cost" name="cost"  min="0" step="0.01" required>
+							<!-- Champ pour modifier la catégorie -->
+							<label for="edit-category">Category:</label>
+							<input type="text" id="edit-category" name="category" required>
+							<!-- Boutons pour sauvegarder ou annuler -->
+							<div class="modal-footer">
+								<button type="submit">Save Changes</button>
+								<button type="button" onclick="hideEditForm()">Cancel</button>
+							</div>
+						</form>
+					</div>
+				</div>
+				<!-- Conteneur pour afficher les items -->
+				<div id="items"></div>
 			</div>
-			<div id="items"></div>
 		</div>
+		<!-- Pied de page -->
 		<footer>
 			&copy; 2024 Market Place. All rights reserved.
 		</footer>
