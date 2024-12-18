@@ -5,6 +5,8 @@ let filterMax = 1000; // Prix maximum
 let filterCategory = ""; // Catégorie de jeu à filtrer
 let maxCost = 0; // Le prix maximum des jeux récupérés
 let minCost = 0; // Le prix minimum des jeux récupérés
+let nbItem = 0; // Le nombre de jeux récupérés
+let temp = 0; // variable buffer
 
 // Fonction pour récupérer la liste des jeux depuis l'API
 function getGames() {
@@ -57,6 +59,7 @@ function updateGames() {
 	getGames().done((items) => {
 		let content = ""; // Variable pour construire le HTML des jeux filtrés
 		items.forEach((element, i) => {
+			temp += 1;
 			// Mise à jour des valeurs min et max des prix
 			if (i == 0) {
 				minCost = element.cost; // Initialisation du prix minimum
@@ -99,6 +102,12 @@ function updateGames() {
 	document.getElementById('price-min').max = maxCost;
 	document.getElementById('price-max').min = minCost;
 	document.getElementById('price-max').max = maxCost;
+	if(temp != nbItem){
+		nbItem = temp;
+		document.getElementById('price-min').value = minCost;
+		document.getElementById('price-max').value = maxCost;
+	}
+	temp = 0;
 }
 
 // Fonction pour afficher le formulaire d'édition d'un jeu
@@ -120,14 +129,3 @@ setInterval(updateGames, 2000);
 
 // Lors du chargement de la page, mettre à jour la liste des jeux
 document.addEventListener("DOMContentLoaded", updateGames);
-
-// Initialisation des filtres de prix au chargement de la page
-window.onload = function() {
-	updateGames();
-	document.getElementById('price-min').min = minCost; // Prix minimum
-	document.getElementById('price-min').value = minCost; // Valeur du prix minimum
-	document.getElementById('price-min').max = maxCost; // Prix maximum
-	document.getElementById('price-max').min = minCost; // Prix minimum
-	document.getElementById('price-max').max = maxCost; // Prix maximum
-	document.getElementById('price-max').value = maxCost; // Valeur du prix maximum
-};
