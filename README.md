@@ -150,6 +150,7 @@ Voici les endpoints disponibles dans le backend :
 
 ## Captures d'écran
 ### Frontend
+![fontend-ui](assets/frontend-ui.png)
 
 ### Backend (Utilisation avec curl)
 ```bash
@@ -165,3 +166,4 @@ curl -X PUT http://localhost/api/edit -H "Content-Type: application/json" -d '{"
 # Supprimer un jeu
 curl -X DELETE http://localhost/api/delete/1
 ```
+![backend-curl](assets/backend-curl.png)
