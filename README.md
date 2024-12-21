@@ -122,10 +122,63 @@ Pour des raisons de **sécurité**, les paramètres sensibles (comme les mots de
 
 >   [!WARNING]
 >
->   -   Si vous modifiez le port ou l’URL de `REACT_APP_BACKEND_URL`, mettez à jour les configurations correspondantes dans :
->       -   Le fichier `nginx.conf` pour le proxy.
->       -   Le backend (`docker-compose.yml`, `main.py`, `Dockerfile.python`). Cela garantit une bonne communication entre le frontend et le backend via le proxy Nginx.
->   -   **Conservez toujours vos informations sensibles privées**, surtout si vous poussez ce projet sur un dépôt public. Ajoutez `.env` à `.gitignore`.
+>   ⚠️ **Modifications de Port**
+>
+>   -   **Problème :** Si le port `3000` (défini dans `REACT_APP_BACKEND_URL`) est déjà utilisé sur votre machine, vous pouvez modifier le port, par exemple vers `5000`.
+>   -   **Impact :** Si vous changez ce port dans `.env`, **vous devez également mettre à jour toutes les configurations correspondantes** pour assurer une bonne communication entre le frontend, le backend et le proxy Nginx.
+>
+>   ##### Étapes pour gérer les modifications de port :
+>
+>   1.  **Changer le port dans `.env`** :
+>
+>       ```env
+>       REACT_APP_BACKEND_URL=http://server:5000/
+>       ```
+>
+>   2.  **Mettre à jour les fichiers de configuration** :
+>
+>       -   **Docker Compose** : Dans le fichier `docker-compose.yml`, vérifiez les ports exposés pour le service backend.
+>
+>           Exemple :
+>
+>           ```yaml
+>           expose:
+>             - "5000:5000"
+>           ```
+>
+>       -   **Proxy Nginx** : Dans `nginx.conf`, remplacez toutes les occurrences de `3000` par `5000`
+>
+>           Exemple :
+>
+>           ```nginx
+>           location /api/ {
+>             proxy_pass http://server:5000;
+>           }
+>           ```
+>
+>       -   **Backend** : `main.py`, `Dockerfile.python`. Vérifiez si des ports spécifiques y sont définis.
+>       
+>           Exemple:
+>       
+>           ```
+>           # main.py
+>           uvicorn.run(app, host="0.0.0.0", port=5000)
+>           
+>           # Dockerfile.python
+>           
+>           EXPOSE 5000
+>           CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "5000", "--reload"]
+>           ```
+>       
+>           
+>
+>   **Bonne pratique ✅ Utilisation d’un IDE pour accélérer les changements** :
+>   Au lieu de modifier manuellement chaque fichier, utilisez la fonction **find/replace** de votre IDE (comme VS Code, PyCharm, ou autre) pour rechercher toutes les occurrences de `3000` et les remplacer par `5000`.
+>
+>   <img src="assets/find-replace-port.png" alt="find-replace-port" style="zoom:33%;" />
+>
+>   3.   **Redémarrer les services** :
+>         Après les modifications, reconstruisez les conteneurs pour appliquer les changements.
 
 ---
 
