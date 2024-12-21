@@ -160,7 +160,7 @@ Pour des raisons de **sécurité**, les paramètres sensibles (comme les mots de
 >       
 >           Exemple:
 >       
->           ```
+>           ```python
 >           # main.py
 >           uvicorn.run(app, host="0.0.0.0", port=5000)
 >           
