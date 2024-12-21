@@ -1,7 +1,22 @@
+# Utilise une image officielle de Python 3.11 basée sur une version légère de Debian (slim).
 FROM python:3.11-slim
+
+# Définit le répertoire de travail dans le conteneur comme /app.
 WORKDIR /app
+
+# Copie tout le contenu du répertoire actuel vers le répertoire de travail dans le conteneur.
 COPY . /app
+
+# Copie le fichier requirements.txt dans le répertoire de travail pour installer les dépendances.
 COPY requirements.txt ./
+
+# Installe les dépendances Python spécifiées dans requirements.txt. 
+# L'option --no-cache-dir réduit la taille de l'image finale en évitant de stocker les fichiers temporaires.
 RUN pip install --no-cache-dir -r requirements.txt
-EXPOSE 8000
+
+# Expose le port 3000 pour permettre les connexions externes.
+# Cela ne configure pas le port dans l'application elle-même, mais informe simplement Docker.
+EXPOSE 3000
+
+# Définit la commande par défaut pour exécuter l'application avec Uvicorn.
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "3000", "--reload"]

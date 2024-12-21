@@ -21,40 +21,50 @@
 
 ---
 
-
 ## Description
-Ce projet est une application web composée de plusieurs microservices conteneurisés avec Docker. Elle s'inspire de l'application à Dockeriser du Lab6. Nous avons choisi de compléter cette application pour en faire un market place de jeux vidéos en ligne plus étoffé. Nous l'avons notamment doté d'une option de filtre selon le nom, le prix et le genre.
 
-Elle comprend :
+Ce projet est une application web composée de plusieurs microservices conteneurisés avec Docker. Initialement basée sur l'application à Dockeriser du Lab6, cette application a été enrichie pour devenir une marketplace de jeux vidéos en ligne. Les utilisateurs peuvent ajouter, modifier, consulter et supprimer des jeux. Elle inclut également une fonctionnalité de filtrage par **nom**, **prix** et **genre**.
 
-- **Backend** : Une API REST développée avec FastAPI pour gérer une base de données de jeux.
-- **Base de données** : MySQL pour gérer les données.
-- **Frontend** : Une interface utilisateur simple développée avec HTML, CSS et JavaScript.
-- **Proxy** : Configuration Nginx pour servir le frontend et proxy les requêtes API.
-- **Orchestration** : Tous les services sont orchestrés avec Docker Compose.
+### Composants du Projet
+- **Backend** : Une API REST développée avec **FastAPI** pour gérer une base de données MySQL.
+- **Base de données** : **MySQL** pour stocker et gérer les informations sur les jeux.
+- **Frontend** : Une interface utilisateur responsive construite avec **HTML**, **CSS**, et **JavaScript**.
+- **Proxy** : **Nginx** configuré pour servir les fichiers statiques du frontend et relayer les requêtes vers l'API backend.
+- **Orchestration** : **Docker Compose** pour automatiser le déploiement de l'application.
+
+---
 
 ## Fonctionnalités
+
 ### Backend
-- **POST** : Un bouton "add item" permet d'ajouter un jeu à la base de données avec : son nom, son prix, et son type.
-- **GET** : Cela récupère la base de données de la liste des jeux.
-- **DELETE** : Cela supprime un jeu de la base de données en utilisant son identifiant.
-- **PUT** : Modifier les informations d'un jeu existant.
-- **Connexion à une base de données** : Permet une connexion persistante avec notre base de données.
+L'API REST offre les fonctionnalités suivantes :  
+- **Ajouter un jeu (POST)** : Ajouter un jeu en spécifiant son nom, son prix, et son genre.  
+- **Récupérer la liste des jeux (GET)** : Obtenir tous les jeux enregistrés avec des options de filtrage.  
+- **Modifier un jeu (PUT)** : Mettre à jour les informations d’un jeu existant.  
+- **Supprimer un jeu (DELETE)** : Supprimer un jeu à partir de son identifiant unique.  
 
 ### Frontend
-- Une interface utilisateur intuitive permettant :
-  - L'ajout de données via un formulaire dynamique.
-  - L'affichage des données récupérées depuis l'API avec une mise en page agréable pour l'utilisateur.
-  - La suppression des données avec confirmation de l'utilisateur.
-  - Une interface responsive pour une utilisation sur mobile et desktop.
+Le frontend inclut :  
+- **Ajout de jeux** : Formulaire dynamique avec validation pour ajouter des jeux.  
+- **Affichage des jeux** : Liste des jeux avec mise en page optimisée et options de tri/filtrage.  
+- **Suppression des jeux** : Bouton de suppression avec confirmation utilisateur.  
 
 ### Proxy Nginx
-- Servir les fichiers statiques du frontend.
-- Rediriger les requêtes API vers le backend via un proxy.
+- **Fichiers statiques** : Sert les fichiers HTML/CSS/JS pour le frontend.  
+- **Redirection** : Relaye les requêtes du frontend vers l’API backend.  
+
+---
 
 ## Structure du Projet
 ```plaintext
 project/
+│
+├── assets/               # Captures d’écran et autres ressources visuelles
+│   ├── backend-curl.png
+│   ├── frontend-edit.png
+│   ├── frontend-filter.png
+│   ├── frontend-main.png
+│   └── frontend-phpadmin.png
 │
 ├── backend/
 │   ├── app/              # Code source du backend
@@ -81,89 +91,125 @@ project/
 └── README.md             # Documentation du projet
 ```
 
+---
+
+## Variables d’Environnement
+
+Pour des raisons de **sécurité**, les paramètres sensibles (comme les mots de passe) sont définis dans le fichier `.env`. Un exemple de fichier `.env` est déjà inclus dans ce projet. Vous pouvez le modifier pour personnaliser les valeurs selon vos besoins.
+
+### Exemple de contenu `.env`
+```env
+  # MySQL Configuration
+  MYSQL_ROOT_PASSWORD=root
+  MYSQL_DATABASE=mydatabase
+  MYSQL_USER=user
+  MYSQL_PASSWORD=user
+
+  # PhpMyAdmin Configuration
+  PMA_HOST=database
+  PMA_USER=user
+  PMA_PASSWORD=user
+
+  # Node.js API Configuration
+  DB_HOST=database
+  DB_USER=user
+  DB_PASSWORD=user
+  DB_NAME=mydatabase
+
+  # React Front-End Configuration # Attention, si vo
+  REACT_APP_BACKEND_URL=http://server:3000/
+```
+
+>   [!WARNING]
+>
+>   -   Si vous modifiez le port ou l’URL de `REACT_APP_BACKEND_URL`, mettez à jour les configurations correspondantes dans :
+>       -   Le fichier `nginx.conf` pour le proxy.
+>       -   Le backend (`docker-compose.yml`, `main.py`, `Dockerfile.python`). Cela garantit une bonne communication entre le frontend et le backend via le proxy Nginx.
+>   -   **Conservez toujours vos informations sensibles privées**, surtout si vous poussez ce projet sur un dépôt public. Ajoutez `.env` à `.gitignore`.
+
+---
+
 ## Prérequis
-- **Docker** version 20.10 ou plus récent.
-- **Docker Compose** version 1.29 ou plus récent.
-- Navigateur web moderne (pour le frontend).
+
+- **Docker** version 20.10 ou plus récent.  
+- **Docker Compose** :
+  - **v1.x** : Utilisez `docker-compose`.  
+  - **v2.x ou supérieur** : Utilisez `docker compose` (sans tiret).  
+- Un navigateur web moderne pour accéder au frontend.  
+
+---
 
 ## Installation et Exécution
-### Étapes pour exécuter le projet
-1. Clonez ce dépôt :
+
+1. Clonez le dépôt :  
    ```bash
    git clone <url-du-repo>
    cd project
    ```
 
-2. Configurez les variables d'environnement :
-   - Créez un fichier `.env` à la racine du projet avec le contenu suivant :
-     ```env
-     # MySQL Configuration
-     MYSQL_ROOT_PASSWORD=root
-     MYSQL_DATABASE=mydatabase
-     MYSQL_USER=user
-     MYSQL_PASSWORD=user
+2. Configurez vos variables d'environnement en éditant le fichier `.env` selon vos besoins.
 
-     # PhpMyAdmin Configuration
-     PMA_HOST=database
-     PMA_USER=user
-     PMA_PASSWORD=user
-
-     # Node.js API Configuration
-     DB_HOST=database
-     DB_USER=user
-     DB_PASSWORD=user
-     DB_NAME=mydatabase
-
-     # React Front-End Configuration
-     REACT_APP_BACKEND_URL=http://server:3000/
+3. Construisez les images Docker :  
+   - **Pour Docker Compose v1** :  
+     ```bash
+     docker-compose build
+     ```
+   - **Pour Docker Compose v2 ou supérieur** :  
+     ```bash
+     docker compose build
      ```
 
-3. Construisez les images Docker :
-   ```bash
-   docker-compose build
-   ```
+4. Lancez les services :  
+   - **Pour Docker Compose v1** :  
+     ```bash
+     docker-compose up
+     ```
+   - **Pour Docker Compose v2 ou supérieur** :  
+     ```bash
+     docker compose up
+     ```
 
-4. Lancez l'application :
-   ```bash
-   docker-compose up
-   ```
+5. Accédez aux services :  
+   - **Frontend** : [http://localhost:80](http://localhost:80)  
+   - **PhpMyAdmin** : [http://localhost:8080](http://localhost:8080)  
 
-5. Accédez aux services :
-   - **Frontend** : `http://localhost`.
-   - **PhpMyAdmin** : `http://localhost:8080`.
-   - **API** : `http://localhost/api` (les requêtes API sont servies par Nginx).
+6. Nettoyez l'environnement :  
+   - **Pour Docker Compose v1** :  
+     ```bash
+     docker-compose down
+     ```
+   - **Pour Docker Compose v2 ou supérieur** :  
+     ```bash
+     docker compose down
+     ```
 
-6. Nettoyez l'environnement après utilisation :
-   ```bash
-   docker-compose down
-   ```
+---
 
-## Endpoints de l'API
-Voici les endpoints disponibles dans le backend :
+## Endpoints de l’API
 
 | Méthode | Endpoint          | Description                        |
 |---------|-------------------|------------------------------------|
-| POST    | `/register`       | Ajouter un nouveau jeu.            |
+| POST    | `/add`            | Ajouter un nouveau jeu.            |
 | GET     | `/games`          | Récupérer tous les jeux.           |
-| PUT     | `/edit`           | Modifier un jeu existant.          |
-| DELETE  | `/delete/{index}` | Supprimer un jeu par son identifiant.|
+| PUT     | `/update/{id}`    | Modifier un jeu existant.          |
+| DELETE  | `/delete/{id}`    | Supprimer un jeu par son identifiant.|
 
-## Captures d'écran
+---
+
+## Captures d'Écran
+
 ### Frontend
-![fontend-ui](assets/frontend-ui.png)
+#### Interface Principale
+![Frontend Main](assets/frontend-main.png)
 
-### Backend (Utilisation avec curl)
-```bash
-# Ajouter un jeu
-curl -X POST http://localhost/api/register -H "Content-Type: application/json" -d '{"name": "Chess", "cost": 20.5, "category": "Board Game"}'
+#### Filtrage des Jeux
+![Frontend Filter](assets/frontend-filter.png)
 
-# Récupérer tous les jeux
-curl -X GET http://localhost/api/games
+#### Modification d'un Jeu
+![Frontend Edit](assets/frontend-edit.png)
 
-# Modifier un jeu
-curl -X PUT http://localhost/api/edit -H "Content-Type: application/json" -d '{"id": 1, "name": "Checkers", "cost": 15.0, "category": "Board Game"}'
+#### PhpMyAdmin
+![PhpMyAdmin](assets/frontend-phpadmin.png)
 
-# Supprimer un jeu
-curl -X DELETE http://localhost/api/delete/1
-```
-![backend-curl](assets/backend-curl.png)
+### Backend (Exemple avec curl)
+![Backend Curl](assets/backend-curl.png)
